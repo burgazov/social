@@ -189,7 +189,7 @@ public class UserServiceImpl implements UserService {
 					Optional<User> followUser = userRepository.findById(followId);
 					if(followUser.isPresent() && 
 							!( user.get().equals(followUser.get()) && flag == AddRemove.ADD)) { 
-						// Can remove itself from follows if added by mistake, but cannot itself
+						// Can remove itself from follows if added by mistake, but cannot add itself
 						boolean success = false;
 						if(flag == AddRemove.ADD) 
 							success = user.get().getFollows().add(followUser.get());
