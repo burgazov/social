@@ -267,9 +267,9 @@ public class UserController {
 		return new ResponseEntity<Set<?>>( follows, follows != null?  HttpStatus.OK: HttpStatus.NOT_FOUND );
 	}
 
-	// /social/user/follow/User Name
-	// /social/user/follow/User Name?type=ids
-	// /social/user/follow/User Name?type=name
+	// /social/user/follow/id/1
+	// /social/user/follow/id/1?type=ids
+	// /social/user/follow/id/1?type=names
 	@RequestMapping(value = "/user/follow/id/{user_id}", method = RequestMethod.GET)
 	public ResponseEntity<?> getFollows(@PathVariable("user_id") Long userId, 
 			@RequestParam(value="type", required=false) String type){ 
