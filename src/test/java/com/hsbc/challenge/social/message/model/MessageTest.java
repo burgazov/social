@@ -1,6 +1,5 @@
 package com.hsbc.challenge.social.message.model;
 
-import static org.junit.Assert.*;
 import static com.hsbc.challenge.social.user.model.UserTest.NAMES;
 
 import java.util.Date;
