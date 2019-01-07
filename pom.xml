@@ -9,9 +9,9 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.hsbc.challenge.social</groupId>
-	<artifactId>social-network-challenge</artifactId>
+	<artifactId>simple-social-network-challenge</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>social-network-challenge</name>
+	<name>simple-social-network-challenge</name>
 	<description>Demo project for Spring Boot</description>
 
 	<properties>
