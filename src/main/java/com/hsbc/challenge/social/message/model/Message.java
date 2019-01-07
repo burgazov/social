@@ -7,33 +7,34 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
 import com.hsbc.challenge.social.user.model.User;
 
 @Entity
 public class Message implements Comparable<Message>{
-	@Id @GeneratedValue
+	@Id @GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	
 	@Column(name="MESSAGE", nullable=false)
 	private String message;
 	
-//	@JsonBackReference// @JsonManagedReference @OneToMany, @JsonBackReference @ManyToOne, @JsonIgnore
-	@ManyToOne(fetch = FetchType.EAGER)
-	// @JoinColumn(name = "USER_ID")
+	@ManyToOne(fetch = FetchType.LAZY)
+	 	@JoinColumn(name = "USER_ID", nullable=false)
 	private User user;
 	
 	@Column(name="CREATED", nullable=false,
 			columnDefinition="datetime NOT NULL DEFAULT CURRENT_TIMESTAMP")
-	private Date created;
+	private Date created  = new Date();
 	
 	@Column(name="UPDATED", nullable=false,
 			columnDefinition="datetime NOT NULL DEFAULT CURRENT_TIMESTAMP")
-	private Date updated;
+	private Date updated = new Date();
 	
-	public Message() {}
+	public Message() {this("", null);}
 	
 	public Message(String message, User user) {
 		this.message = message == null? "": message;
@@ -82,9 +83,7 @@ public class Message implements Comparable<Message>{
 	public void setUpdated(Date updated) {
 		this.updated = updated;
 	}
-	
-	// https://struberg.wordpress.com/2016/10/15/tostring-equals-and-hashcode-in-jpa-entities/
-	
+		
 	@Override
 	public boolean equals(Object o) {
 		if( this == o )

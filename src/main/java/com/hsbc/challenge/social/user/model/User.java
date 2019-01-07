@@ -12,6 +12,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
@@ -26,7 +27,7 @@ import com.hsbc.challenge.social.message.model.Message;
 @JsonIdentityInfo(generator=ObjectIdGenerators.IntSequenceGenerator.class, property="@id")
 @Entity
 public class User {
-	@Id @GeneratedValue
+	@Id @GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name="USER_ID")
 	private Long id;
 	
@@ -36,7 +37,7 @@ public class User {
 	@Column(name="NAME", nullable=false, unique=true)
 	private String name;
 	
-	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	@OrderBy("created")
 	private SortedSet<Message> messages;
 	
@@ -44,7 +45,6 @@ public class User {
 	@JoinTable(name="FOLLOWER_USER",
 		joinColumns={ @JoinColumn(name="FOLLOWER_ID", referencedColumnName="USER_ID") },
 		inverseJoinColumns={ @JoinColumn(name="USER_ID", referencedColumnName="USER_ID") }) 
-//	@JsonIdentityInfo
 	private Set<User> follows;
 	
 	@Column(name="CREATED", nullable=false,

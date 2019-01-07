@@ -98,9 +98,13 @@ public class UserControllerMockMvcTest {
 				"/social/message/Second User Name/Second User Display Name/Second user message NEXT") )
 				.andDo( print() );		
 
-		mockMvc.perform(  MockMvcRequestBuilders.get( "/social/user/id") ).andDo( print() );
+		mockMvc.perform(  MockMvcRequestBuilders.get( "/social/user") )
+			.andExpect( jsonPath("$", hasSize( 2 ) ) )
+			.andExpect( jsonPath("$[ 0 ].id").value( 1 ) )
+			.andExpect( jsonPath("$[ 1 ].id").value( 2 ) )
+			.andDo( print() );
 		
-		mockMvc.perform(  MockMvcRequestBuilders.put( "/social/user/follow/1/4") )
+		mockMvc.perform(  MockMvcRequestBuilders.put( "/social/user/follow/1/2") )
 			.andExpect( jsonPath("$").isBoolean() )
 			.andExpect( jsonPath("$").value( true ) );		
 		
@@ -115,10 +119,8 @@ public class UserControllerMockMvcTest {
 		mockMvc.perform( MockMvcRequestBuilders.get("/social/user/all/id/1")
 				.accept(MediaType.APPLICATION_JSON) )
 				.andExpect( jsonPath("$", hasSize( 2 ) ) )
-				.andExpect( jsonPath("$[ 0 ].id").exists() )
-//				.andExpect( jsonPath("$[ 0 ].id").value( 3 ) )
-				.andExpect( jsonPath("$[ 1 ].id").exists() )
-//				.andExpect( jsonPath("$[ 1 ].id").value( 2 ) )
+				.andExpect( jsonPath("$[ 0 ].id").value( 4 ) )
+				.andExpect( jsonPath("$[ 1 ].id").value( 3 ) )
 				.andExpect( status().isOk() )
 				.andExpect( content().contentType(MediaType.APPLICATION_JSON_UTF8) )
 				.andDo( print() );
@@ -126,19 +128,16 @@ public class UserControllerMockMvcTest {
 		mockMvc.perform( MockMvcRequestBuilders.get("/social/user/all/First User Name")
 				.accept(MediaType.APPLICATION_JSON) )
 				.andExpect( jsonPath("$", hasSize( 2 ) ) )
-				.andExpect( jsonPath("$[ 0 ].id").exists() )
-//				.andExpect( jsonPath("$[ 0 ].id").value( 3 ) )
-				.andExpect( jsonPath("$[ 1 ].id").exists() )
-//				.andExpect( jsonPath("$[ 1 ].id").value( 2 ) )
+				.andExpect( jsonPath("$[ 0 ].id").value( 4 ) )
+				.andExpect( jsonPath("$[ 1 ].id").value( 3 ) )
 				.andExpect( status().isOk() )
 				.andExpect( content().contentType(MediaType.APPLICATION_JSON_UTF8) )
 				.andDo( print() );
 		
-		// [{"id":1,"displayName":"First User Name","name":"First User Name","messages":[{"id":3,"message":"First User message Second","created":"2019-01-04T00:40:20.287+0000","updated":"2019-01-04T00:40:20.287+0000"},{"id":2,"message":"First User Message","created":"2019-01-04T00:40:20.140+0000","updated":"2019-01-04T00:40:20.140+0000"}],"follows":[{"id":4,"displayName":"Second User Name","name":"Second User Name","messages":[{"id":6,"message":"Second user message NEXT","created":"2019-01-04T00:40:20.323+0000","updated":"2019-01-04T00:40:20.323+0000"},{"id":5,"message":"Second user message","created":"2019-01-04T00:40:20.305+0000","updated":"2019-01-04T00:40:20.305+0000"}],"follows":[],"created":"2019-01-04T00:40:20.303+0000","updated":"2019-01-04T00:40:20.303+0000"}],"created":"2019-01-04T00:40:20.044+0000","updated":"2019-01-04T00:40:20.044+0000"},{"id":4,"displayName":"Second User Name","name":"Second User Name","messages":[{"id":6,"message":"Second user message NEXT","created":"2019-01-04T00:40:20.323+0000","updated":"2019-01-04T00:40:20.323+0000"},{"id":5,"message":"Second user message","created":"2019-01-04T00:40:20.305+0000","updated":"2019-01-04T00:40:20.305+0000"}],"follows":[],"created":"2019-01-04T00:40:20.303+0000","updated":"2019-01-04T00:40:20.303+0000"}]
+		// [{"@id":1,"id":1,"displayName":"First User Name","name":"First User Name","messages":[{"id":2,"message":"First User message Second","user":1,"created":"2019-01-07T22:54:39.339+0000","updated":"2019-01-07T22:54:39.339+0000"},{"id":1,"message":"First User Message","user":1,"created":"2019-01-07T22:54:39.100+0000","updated":"2019-01-07T22:54:39.100+0000"}],"follows":[{"@id":2,"id":2,"displayName":"Second User Name","name":"Second User Name","messages":[{"id":4,"message":"Second user message NEXT","user":2,"created":"2019-01-07T22:54:39.394+0000","updated":"2019-01-07T22:54:39.394+0000"},{"id":3,"message":"Second user message","user":2,"created":"2019-01-07T22:54:39.382+0000","updated":"2019-01-07T22:54:39.382+0000"}],"follows":[],"created":"2019-01-07T22:54:39.380+0000","updated":"2019-01-07T22:54:39.380+0000"}],"created":"2019-01-07T22:54:39.014+0000","updated":"2019-01-07T22:54:39.014+0000"},2]
 		ResultActions resultActions = mockMvc.perform( MockMvcRequestBuilders.get("/social/user") )
 				.andDo( print() );
-		String content = resultActions.andReturn().getResponse().getContentAsString();
-		System.out.println( content );
+		resultActions.andExpect( jsonPath("$", hasSize( 2 ) ) );
 	}
 	
 	/**
@@ -149,10 +148,11 @@ public class UserControllerMockMvcTest {
 	@Test
 	public void test_2_GetUserMessages() throws Exception {
 		// {"id":2,"message":"new user name message","created":"2019-01-03T20:54:57.229+0000","updated":"2019-01-03T20:54:57.229+0000"}
+		// {"id":5,"message":"new user name message","user":{"@id":1,"id":3,"displayName":"User Name","name":"User Name","messages":[{"id":5,"message":"new user name message","user":1,"created":"2019-01-07T23:02:25.239+0000","updated":"2019-01-07T23:02:25.239+0000"}],"follows":[],"created":"2019-01-07T23:02:25.196+0000","updated":"2019-01-07T23:02:25.196+0000"},"created":"2019-01-07T23:02:25.239+0000","updated":"2019-01-07T23:02:25.239+0000"}
 		ResultActions resultActions = mockMvc.perform( MockMvcRequestBuilders.put(
 					"/social/message/User Name/new user name message") )
 				.andExpect( jsonPath( "$.id").exists() )
-//				.andExpect( jsonPath( "$.id").value( 8 ) )
+				.andExpect( jsonPath( "$.id").value( 5 ) )
 				.andExpect( jsonPath( "$.message").exists() )
 				.andExpect( jsonPath( "$.message").value( "new user name message" ) )
 				.andExpect( jsonPath( "$.created").exists() )
@@ -164,7 +164,7 @@ public class UserControllerMockMvcTest {
 		resultActions = mockMvc.perform( MockMvcRequestBuilders.put(
 					"/social/message/User Name?message=New User Message") )
 				.andExpect( jsonPath( "$.id").exists() )
-//				.andExpect( jsonPath( "$.id").value( 9 ) )
+				.andExpect( jsonPath( "$.id").value( 6 ) )
 				.andExpect( jsonPath( "$.message").exists() )
 				.andExpect( jsonPath( "$.message").value( "New User Message" ) )
 				.andExpect( jsonPath( "$.created").exists() )
@@ -176,10 +176,8 @@ public class UserControllerMockMvcTest {
 		resultActions = mockMvc.perform( MockMvcRequestBuilders.get("/social/user/id/1")
 				.accept(MediaType.APPLICATION_JSON) )
 				.andExpect( jsonPath("$", hasSize( 2 ) ) )
-				.andExpect( jsonPath("$[ 0 ].id").exists() )
-//				.andExpect( jsonPath("$[ 0 ].id").value( 9 ) )
-				.andExpect( jsonPath("$[ 1 ].id").exists() )
-//				.andExpect( jsonPath("$[ 1 ].id").value( 8 ) )
+				.andExpect( jsonPath("$[ 0 ].id").value( 2 ) )
+				.andExpect( jsonPath("$[ 1 ].id").value( 1 ) )
 				.andExpect( status().isOk() )
 				.andExpect( content().contentType(MediaType.APPLICATION_JSON_UTF8) )
 				.andDo( print() );
@@ -187,13 +185,11 @@ public class UserControllerMockMvcTest {
 		resultActions = mockMvc.perform( MockMvcRequestBuilders.get("/social/user/User Name")
 				.accept(MediaType.APPLICATION_JSON) )
 				.andExpect( jsonPath("$", hasSize( 2 ) ) )
-				.andExpect( jsonPath("$[ 0 ].id").exists() )
-//				.andExpect( jsonPath("$[ 0 ].id").value( 8 ) )
-				.andExpect( jsonPath("$[ 1 ].id").exists() )
-//				.andExpect( jsonPath("$[ 1 ].id").value( 7 ) )
+				.andExpect( jsonPath("$[ 0 ].id").value( 6 ) )
+				.andExpect( jsonPath("$[ 1 ].id").value( 5 ) )
 				.andExpect( status().isOk() )
-				.andExpect( content().contentType(MediaType.APPLICATION_JSON_UTF8) )
 				.andDo( print() );
+		resultActions.andExpect( content().contentType(MediaType.APPLICATION_JSON_UTF8) );
 	}
 	
 	/**
