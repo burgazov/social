@@ -3,7 +3,6 @@ package com.hsbc.challenge.social.controller;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
-import java.util.SortedSet;
 import java.util.TreeSet;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
