@@ -9,6 +9,7 @@ simple social networking application
 
 ### 2. Compile and run locally
 From the root of your project location (e.g. C:\workspace\social>) on cmd do
+
 C:\workspace\social> mvn clean test install
 
 C:\workspace\social> mvn spring-boot:run
