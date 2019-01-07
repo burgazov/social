@@ -75,7 +75,8 @@ BODY: ["Name 1", "Name 2", "Name 3", "Name 4"]
 /social/user/follow?userName=User Name&flag=ADD - same as above, i.e. if flag omitted by default operation will be add all
 /social/user/follow?userName=User Name&flag=REMOVE - same as above, but will remove them instead
 
-
+# Cloud running instance
+It will follow shortly on AWS
 
   
 
