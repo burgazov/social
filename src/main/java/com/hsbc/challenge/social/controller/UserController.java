@@ -38,9 +38,6 @@ public class UserController {
 	// /social/user?type=names
 	@RequestMapping(value = "/user", method = RequestMethod.GET)
 	public ResponseEntity<?> getAllUsers(@RequestParam(value="type", required=false) String type){ 
-		String info = "\nGet All Users" ;		
-		logger.info(info); 
-		
 		Set<User> usersObjects = userService.getAllUsers();
 		Set<?> users = usersObjects;
 		if(type != null && ( type.equals("names") || type.equals("ids") ))
@@ -55,9 +52,6 @@ public class UserController {
 	// /social/user/id/1
 	@RequestMapping(value = "/user/id/{user_id}", method = RequestMethod.GET)
 	public ResponseEntity<?> getUserMessages(@PathVariable("user_id") Long userId){ 
-		String info = "\nGet User's MESSAGES_TEXT by user Id" + "\n Parameters, user Id = " + userId;		
-		logger.info(info); 
-		
 		Set<Message> messages = userService.getMessages(userId);
 		logger.info(messages != null  && ! messages.isEmpty() ? messages.toString(): "NO Messages FOUND!!!");
 		
@@ -67,9 +61,6 @@ public class UserController {
 	// /social/user/User Name
 	@RequestMapping(value = "/user/{user_name}", method = RequestMethod.GET)
 	public ResponseEntity<?> getUserMessages(@PathVariable("user_name") String userName){ 
-		String info = "\nGet User's MESSAGES_TEXT by user Name" + "\n Parameters, user Name = " + userName;		
-		logger.info(info); 
-		
 		Set<Message> messages = userService.getMessages(userName);
 		logger.info(messages != null  && ! messages.isEmpty() ? messages.toString(): "NO Messages FOUND!!!");
 		
@@ -79,9 +70,6 @@ public class UserController {
 	// /social/user/all/id/1
 	@RequestMapping(value = "/user/all/id/{user_id}", method = RequestMethod.GET)
 	public ResponseEntity<?> getUserAllMessages(@PathVariable("user_id") Long userId){ 
-		String info = "\nGet User's ALL MESSAGES_TEXT by user Id" + "\n Parameters, user Id = " + userId;		
-		logger.info(info); 
-		
 		Set<Message> messages = userService.getAllMessages(userId);
 		logger.info(messages != null  && ! messages.isEmpty() ? messages.toString(): "NO Messages FOUND!!!");
 		
@@ -91,9 +79,6 @@ public class UserController {
 	// /social/user/all/User Name
 	@RequestMapping(value = "/user/all/{user_name}", method = RequestMethod.GET)
 	public ResponseEntity<?> getUserAllMessages(@PathVariable("user_name") String userName){ 
-		String info = "\nGet User's All MESSAGES_TEXT by user Name" + "\n Parameters, user Name = " + userName;		
-		logger.info(info); 
-		
 		Set<Message> messages = userService.getAllMessages(userName);
 		logger.info(messages != null  && ! messages.isEmpty() ? messages.toString(): "NO Messages FOUND!!!");
 		
@@ -104,23 +89,16 @@ public class UserController {
 	@RequestMapping(value = "/message/{user_name}", method = RequestMethod.PUT)
 	public ResponseEntity<?> createMessageParam( @PathVariable("user_name") String userName, 
 			@RequestParam(value="message", required=true) String messageText){
-		String info = "\nGet User's All MESSAGES_TEXT by user Name" + "\n Parameters, user Name = " + userName;		
-		logger.info(info); 
-		
 		Message message = userService.createMessage(userName, messageText);
 		logger.info(message != null ? message.toString(): "NO Messages CREATED!!!");
 		
 		return new ResponseEntity<Message>(message, message != null?  HttpStatus.OK: HttpStatus.NOT_FOUND);
 	}
 
-
 	// /social/message/User Name/User Name message
 	@RequestMapping(value = "/message/{user_name}/{message}", method = RequestMethod.PUT)
 	public ResponseEntity<?> createMessage(@PathVariable("user_name") String userName, 
 			@PathVariable("message") String messageText){
-		String info = "\nGet User's All MESSAGES_TEXT by user Name" + "\n Parameters, user Name = " + userName;		
-		logger.info(info); 
-		
 		Message message = userService.createMessage(userName, messageText);
 		logger.info(message != null ? message.toString(): "NO Messages CREATED!!!");
 		
@@ -131,9 +109,6 @@ public class UserController {
 	@RequestMapping(value = "/message/{user_name}/{display_name}/{message}", method = RequestMethod.PUT)
 	public ResponseEntity<?> createMessage(@PathVariable("user_name") String userName, @PathVariable("display_name") String displayName,
 			@PathVariable("message") String messageText){
-		String info = "\nGet User's All MESSAGES_TEXT by user Name" + "\n Parameters, user Name = " + userName;		
-		logger.info(info); 
-		
 		Message message = userService.createMessage(userName, messageText);
 		logger.info(message != null ? message.toString(): "NO Messages CREATED!!!");
 		
@@ -148,10 +123,8 @@ public class UserController {
       	{ "message": "User Name Message 3" } ]
 	 */
 	@RequestMapping(value = "/message/{user_name}", method = RequestMethod.POST)
-	public ResponseEntity<?> createMessage(@PathVariable("user_name") String userName, @RequestBody Message[] messages){
-		String info = "\nGet User's All MESSAGES_TEXT by user Name" + "\n Parameters, user Name = " + userName;		
-		logger.info(info); 
-		
+	public ResponseEntity<?> createMessage(@PathVariable("user_name") String userName, 
+			@RequestBody Message[] messages){
 		Set<Message> messagesSet = new TreeSet<>();
 		Stream.of(messages).forEach( msg -> {
 			Message message = userService.createMessage( userName, msg.getMessage() );
@@ -163,43 +136,39 @@ public class UserController {
 		
 		return new ResponseEntity<Set<Message>>(messagesSet, messagesSet != null  && ! messagesSet.isEmpty() ?  HttpStatus.OK: HttpStatus.NOT_FOUND);
 	}
-	
+
 	// /social/user/follow/1/2
+	// /social/user/follow/1/2?flag=ADD
+	// /social/user/follow/1/2?flag=REMOVE
 	@RequestMapping(value = "/user/follow/{user_id}/{follow_id}", method = RequestMethod.PUT)
 	public ResponseEntity<?> addFollow(@PathVariable("user_id") Long userId, 
 			@PathVariable("follow_id") Long followId, @RequestParam(value="flag", required=false) AddRemove flag){ 
-		String info = "\nPUT add follow by user Id" + "\n Parameters, user Id = " + userId;		
-		logger.info(info); 
-		
 		boolean added = (flag != null && flag == AddRemove.REMOVE)? userService.follow(userId, followId, AddRemove.REMOVE)
 				:userService.follow(userId, followId); // Short add, when flag not presented or flag presented and different than REMOVE
 		logger.info( added ? "Successfully added followId = " + followId: "Follow NOT ADDED!!!");
 		
 		return new ResponseEntity<Boolean>( added, added?  HttpStatus.OK: HttpStatus.NOT_FOUND );
 	}
-	
+
 	// /social/user/follow/1?follow=Follow Name
+	// /social/user/follow/1?follow=Follow Name&flag=ADD
+	// /social/user/follow/1?follow=Follow Name&flag=REMOVE
 	@RequestMapping(value = "/user/follow/{user_id}", method = RequestMethod.PUT)
 	public ResponseEntity<?> addFollow(@PathVariable("user_id") Long userId, 
 			@RequestParam(value="follow", required=true) String followName, @RequestParam(value="flag", required=false) AddRemove flag){ 
-		String info = "\nPUT add follow by user Id" + "\n Parameters, user Id = " + userId;		
-		logger.info(info); 
-		
 		boolean added = (flag != null && flag == AddRemove.REMOVE)? userService.follow(userId, followName, AddRemove.REMOVE)
 				:userService.follow(userId, followName);
 		logger.info( added ? "Successfully added follow Name = " + followName: "Follow NOT ADDED!!!");
 		
 		return new ResponseEntity<Boolean>( added, added?  HttpStatus.OK: HttpStatus.NOT_FOUND );
 	}
-	
+
 	// /social/user/follow?userName=User Name&follow=Follow Name
+	// /social/user/follow?userName=User Name&follow=Follow Name&flag=ADD
+	// /social/user/follow?userName=User Name&follow=Follow Name&flag=REMOVE
 	@RequestMapping(value = "/user/follow", method = RequestMethod.PUT)
 	public ResponseEntity<?> addFollow(@RequestParam(value="userName", required=true) String userName, 
 			@RequestParam(value="follow", required=true) String followName, @RequestParam(value="flag", required=false) AddRemove flag){ 
-		String info = "\nPUT add follow by user name and follow name" 
-			+ "\n Parameters, user name = " + userName;		
-		logger.info(info); 
-		
 		boolean added = (flag != null && flag == AddRemove.REMOVE)? userService.follow(userName, followName, AddRemove.REMOVE)
 				:userService.follow(userName, followName);
 		logger.info( added ? "Successfully added follow Name = " + followName: "Follow NOT ADDED!!!");
@@ -207,17 +176,15 @@ public class UserController {
 		return new ResponseEntity<Boolean>( added, added?  HttpStatus.OK: HttpStatus.NOT_FOUND );
 	}
 	
-	// /social/user/follow/1
+	// /social/user/follow/1	
+	// /social/user/follow/1?flag=ADD	
+	// /social/user/follow/1?flag=REMOVE
 	/*
-	 BODY:
-	 	[1, 2, 3, 4]
+	 BODY: [1, 2, 3, 4]
 	 */
 	@RequestMapping(value = "/user/follow/{user_id}", method = RequestMethod.POST)
 	public ResponseEntity<?> addFollows(@PathVariable("user_id") Long userId, 
 					@RequestBody Long[] ids, @RequestParam(value="flag", required=false) AddRemove flag){ 
-		String info = "\nPOST add follows by user Id and Ids" + "\n Parameters, user Id = " + userId;		
-		logger.info(info); 
-		
 		Set<User> added =  (flag != null && flag == AddRemove.REMOVE)? userService.follows(userId, ids, AddRemove.REMOVE)
 				:userService.follows(userId, ids);
 		logger.info( added != null &&  ! added.isEmpty()? "Successfully added = " + added: "Follows NOT ADDED!!!");
@@ -230,15 +197,11 @@ public class UserController {
 	// /social/user/follow?userName=User Name&flag=ADD
 	// /social/user/follow?userName=User Name&flag=REMOVE
 	/*
-	 BODY:
-	 	["Name 1", "Name 2", "Name 3", "Name 4"]
+	 BODY: ["Name 1", "Name 2", "Name 3", "Name 4"]
 	 */
 	@RequestMapping(value = "/user/follow", method = RequestMethod.POST)
 	public ResponseEntity<?> addFollows(@RequestParam(value="userName", required=true) String userName, 
 			@RequestBody String[] names, @RequestParam(value="flag", required=false) AddRemove flag){ 
-		String info = "\nPOST add follows by user name and names" + "\n Parameters, user name = " + userName;		
-		logger.info(info); 
-		
 		Set<User> added = (flag != null && flag == AddRemove.REMOVE)? userService.follows(userName, names, AddRemove.REMOVE)
 				:userService.follows(userName, names);
 		logger.info( added != null &&  ! added.isEmpty()? "Successfully added = " + added: "Follows NOT ADDED!!!");
@@ -252,8 +215,7 @@ public class UserController {
 	// /social/user/follow/User Name?type=names
 	@RequestMapping(value = "/user/follow/{user_name}", method = RequestMethod.GET)
 	public ResponseEntity<?> getFollows(@PathVariable("user_name") String user_name, 
-			@RequestParam(value="type", required=false) String type){ 
-		
+			@RequestParam(value="type", required=false) String type){ 		
 		User user = userRepository.findByName(user_name);
 		Set<User> followsUsers = user != null? user.getFollows(): new HashSet<>();
 		Set<?> follows = followsUsers;
@@ -271,8 +233,7 @@ public class UserController {
 	// /social/user/follow/id/1?type=names
 	@RequestMapping(value = "/user/follow/id/{user_id}", method = RequestMethod.GET)
 	public ResponseEntity<?> getFollows(@PathVariable("user_id") Long userId, 
-			@RequestParam(value="type", required=false) String type){ 
-		
+			@RequestParam(value="type", required=false) String type){ 		
 		Optional<User> user = userRepository.findById(userId);
 		Set<User> followsUsers = user.isPresent()? user.get().getFollows(): new HashSet<>();
 		Set<?> follows = followsUsers;
