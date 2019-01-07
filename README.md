@@ -90,6 +90,7 @@ BODY: [1, 2, 3, 4]
 
 
 BODY: ["Name 1", "Name 2", "Name 3", "Name 4"]
+
 /social/user/follow?userName=User Name - add all user with names listed into follows list of user "User Name", i.e. user "User Name" will follow and see all messages posted by users with body's names listed
 
 /social/user/follow?userName=User Name&flag=ADD - same as above, i.e. if flag omitted by default operation will be add all
