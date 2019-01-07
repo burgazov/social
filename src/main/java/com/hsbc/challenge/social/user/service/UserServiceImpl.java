@@ -87,7 +87,6 @@ public class UserServiceImpl implements UserService {
 		
 		Message msg = messageRepository.save( new Message( message, user ));
 		user.addMessage(msg);
-//		userRepository.save(user);
 		
 		return msg;
 	}
@@ -97,9 +96,7 @@ public class UserServiceImpl implements UserService {
 		Optional<User> user = userRepository.findById(userId);
 		if(user.isPresent()) {
 			Message msg = messageRepository.save( new Message( message, user.get() ));
-			user.get().addMessage(msg);
-//			userRepository.save(user.get());
-			
+			user.get().addMessage(msg);			
 			return msg;
 		}
 		
@@ -118,38 +115,11 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public boolean follow(String name, String followName) {
-//		User user = userRepository.findByName(name);
-//		User follow = userRepository.findByName(followName);
-//		if(user != null && follow != null) 
-//			// Existing follower follows existing follow already is following by Name
-//			if( ! user.getFollows().contains(follow)) {
-//				boolean result = user.getFollows().add( follow );
-//				userRepository.save( user );
-//				return result;
-//			}
-//		
-//		return false;
 		return follow(name, followName, AddRemove.ADD);
 	}
 
 	@Override
 	public boolean follow(Long userId, Long followId, AddRemove flag) {
-//		Optional<User> user = userRepository.findById(userId);
-//		Optional<User> follow = userRepository.findById(followId);
-//		if(user.isPresent() && follow.isPresent()) 
-//			if( ! (user.get().equals( follow.get() ) // No self followed
-//					|| (user.get().getFollows().contains(follow.get()) && flag == AddRemove.ADD ) ) ){ // Not containing already followed
-//				boolean result = false; 
-//				if( flag == AddRemove.ADD)
-//					result = user.get().getFollows().add( follow.get() );
-//				else
-//					result = user.get().getFollows().remove( follow.get() );
-//				userRepository.save( user.get() );
-//				return result;
-//			}
-//		
-//		return false;
-
 		Set<User> result = follows( userId, new Long[] {followId}, flag);
 		return (result != null && result.size() == 1 
 				&& result.iterator().next().getId().equals(followId));
@@ -157,21 +127,6 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public boolean follow(Long userId, String followName, AddRemove flag) {
-//		Optional<User> user = userRepository.findById(userId);
-//		User follow = userRepository.findByName(followName);
-//		if(user.isPresent() && follow != null) 
-//			if( ! user.get().getFollows().contains(follow)) { // Condition added after test testAddFollowLongString 
-//				// Existing follower follows existing follow already is following by Name
-//				boolean result = false; 
-//				if( flag == AddRemove.ADD)
-//					result = user.get().getFollows().add( follow );
-//				else
-//					result = user.get().getFollows().remove( follow );
-//				userRepository.save( user.get() );
-//				return result;
-//			}
-//		return false;		
-
 		User follow = userRepository.findByName(followName);
 		if(follow != null && follow.getId() != null) {
 			Set<User> result = follows( userId, new Long[] {follow.getId()}, flag);
@@ -234,7 +189,7 @@ public class UserServiceImpl implements UserService {
 					Optional<User> followUser = userRepository.findById(followId);
 					if(followUser.isPresent() && 
 							!( user.get().equals(followUser.get()) && flag == AddRemove.ADD)) { 
-						// Can remove itself from follows if added by mistake, but cannot itself
+						// Can remove itself from follows if added by mistake, but cannot add itself
 						boolean success = false;
 						if(flag == AddRemove.ADD) 
 							success = user.get().getFollows().add(followUser.get());
