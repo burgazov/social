@@ -7,7 +7,6 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.util.Arrays;
-import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.stream.Stream;
@@ -105,24 +104,18 @@ public class UserTest {
 		
 		userRepository.saveAll( users );
 	}
-	
-	private static Date TIMESTAMP;
 
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
 	}
 
 	@Before
-	public void setUp() throws Exception {		
-		TIMESTAMP = new Date();	
-		
+	public void setUp() throws Exception {				
 		initializeUsers( this.entityManager);// , this.userRepository, this.messageRepository
 		
 		List<User> users = userRepository.findAll();		
 		assertNotNull( users );
 		assertEquals( 3l, users.size());
-//		users.stream().forEach( usr -> System.out.println(
-//				"id = " + usr.getId() + ", name - " + usr.getName()) );		
 	}
 
 	@Test
@@ -188,51 +181,6 @@ public class UserTest {
 		entityManager.persist( user );
 		user.getMessages().stream().filter( msg -> msg != message ).forEach( msg -> 
 			assertTrue(	message.getCreated().compareTo( msg.getCreated()) > 0 ) );
-	}
-
-//	@Test
-//	public void testGetMessagesOld() { // TEST IT VERY THOUROUGHLY
-//		List<User> users = userRepository.findAll();		
-//		assertNotNull( users );
-//		assertEquals( 3l, users.size());
-//		users.stream().forEach( usr -> assertNotNull( usr.getMessages() ) );			
-//		
-//		User user = userRepository.findByName("John Smith");
-//		
-//		Message message1 = new Message( MESSAGES_TEXT[ 0 ], user);
-////		entityManager.persist( message1 );
-////		user.getMessages().add(message1);
-////		entityManager.persist( user );		
-//
-//		Message message2 = new Message( MESSAGES_TEXT[ 1 ], user);
-////		entityManager.persist( message2 );
-////		user.getMessages().add(message2);
-////		entityManager.persist( user );
-//
-//		Message message3 = new Message( "Most Recent message", user);
-////		entityManager.persist( message3 );
-////		user.getMessages().add(message3);
-////		entityManager.persist( user );
-//
-//		Message message4 = new Message( "Most Recent message 4", user);
-////		entityManager.persist( message4 );
-////		user.getMessages().add(message4);
-//		
-//		messageRepository.saveAll( Arrays.asList( message1, message2, message3, message4 ) );
-//		boolean added = user.getMessages().addAll( Arrays.asList( message1, message2, message3, message4 ) );
-//		entityManager.persist( user );
-//		
-//		
-//		assertEquals( 4l, user.getMessages().size());
-//		
-//		assertEquals( 1l, 
-//				user.getMessages().first().getCreated().compareTo( 
-//						user.getMessages().last().getCreated() ) );
-//	}
-
-	@Test
-	public void testSetMessages() {
-		
 	}
 
 	@Test
