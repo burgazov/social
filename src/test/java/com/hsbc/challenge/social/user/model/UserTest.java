@@ -56,9 +56,7 @@ public class UserTest {
 		"Jane Eyre message", "Jane Poor Eyre message"
 	};
 	
-	public static void initializeUsers(TestEntityManager entityManager
-//			, 
-			) {
+	public static void initializeUsers(TestEntityManager entityManager) {
 		entityManager.persist( new User( NAMES[ 0 ][ 0 ], NAMES[ 0 ][ 1 ]) );
 		entityManager.persist( new User( NAMES[ 1 ][ 0 ], NAMES[ 1 ][ 1 ]) );
 		entityManager.persist( new User( NAMES[ 2 ][ 0 ]) );
