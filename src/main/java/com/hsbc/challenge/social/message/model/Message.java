@@ -28,11 +28,11 @@ public class Message implements Comparable<Message>{
 	
 	@Column(name="CREATED", nullable=false,
 			columnDefinition="datetime NOT NULL DEFAULT CURRENT_TIMESTAMP")
-	private Date created  = new Date();
+	private Date created;
 	
 	@Column(name="UPDATED", nullable=false,
 			columnDefinition="datetime NOT NULL DEFAULT CURRENT_TIMESTAMP")
-	private Date updated = new Date();
+	private Date updated;
 	
 	public Message() {this("", null);}
 	
